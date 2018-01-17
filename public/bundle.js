@@ -31367,6 +31367,9 @@ var App = function (_Component) {
                 var users = _ref.users;
                 return _this2.chatUpdate(users);
             });
+            socket.on('deleteMessage', function (id) {
+                return _this2.removeMessage(id);
+            });
         }
     }, {
         key: 'messageReceive',
@@ -31391,6 +31394,20 @@ var App = function (_Component) {
         value: function handleUserSubmit(name) {
             this.setState({ name: name });
             socket.emit('join', name);
+        }
+    }, {
+        key: 'removeMessage',
+        value: function removeMessage(id) {
+            var rest = this.state.messages.filter(function (message) {
+                return message.id !== id;
+            });
+            this.setState({ messages: rest });
+        }
+    }, {
+        key: 'removeMessageHandler',
+        value: function removeMessageHandler(id) {
+            socket.emit('deleteMessage', id);
+            this.removeMessage(id);
         }
     }, {
         key: 'render',
@@ -31429,7 +31446,10 @@ var App = function (_Component) {
                         'div',
                         { className: __WEBPACK_IMPORTED_MODULE_2__App_css___default.a.MessageWrapper },
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__MessageList__["a" /* default */], {
-                            messages: this.state.messages
+                            messages: this.state.messages,
+                            removeMessage: function removeMessage(id) {
+                                return _this3.removeMessageHandler(id);
+                            }
                         }),
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__MessageForm__["a" /* default */], {
                             onMessageSubmit: function onMessageSubmit(message) {
@@ -34723,7 +34743,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 
-
+// import uuid from 'uuid';
 
 
 var MessageForm = function (_Component) {
@@ -34743,6 +34763,7 @@ var MessageForm = function (_Component) {
     value: function handleSubmit(e) {
       e.preventDefault();
       var message = {
+        // id : uuid.v4(),
         from: this.props.name,
         text: this.state.text
       };
@@ -34872,6 +34893,13 @@ var Message = function Message(props) {
       'span',
       null,
       props.text
+    ),
+    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+      'button',
+      { className: __WEBPACK_IMPORTED_MODULE_1__MessageList_css___default.a.button, onClick: function onClick() {
+          return props.removeMessage(props.id);
+        } },
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('i', { className: 'fa fa-trash' })
     )
   );
 };
@@ -34881,11 +34909,17 @@ var MessageList = function MessageList(props) {
     'div',
     { className: __WEBPACK_IMPORTED_MODULE_1__MessageList_css___default.a.MessageList },
     props.messages.map(function (message, i) {
-      return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(Message, {
-        key: i,
-        from: message.from,
-        text: message.text
-      });
+      return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        'div',
+        null,
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(Message, {
+          key: i,
+          from: message.from,
+          text: message.text,
+          id: message.id,
+          removeMessage: props.removeMessage
+        })
+      );
     })
   );
 };

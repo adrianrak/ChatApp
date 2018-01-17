@@ -42,6 +42,9 @@ io.on('connection', function(socket) {
           from: name
         });
     });
+    socket.on('deleteMessage', function(id){
+        socket.broadcast.emit('deleteMessage', id);
+    });
 });
 
 server.listen(3000, function(){
