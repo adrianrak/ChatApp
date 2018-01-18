@@ -6,7 +6,10 @@ const Message = props => (
     <div className={styles.Message}>
       <strong>{props.from} :</strong>
       <span>{props.text}</span>
-      <button className={styles.button} onClick={() => props.removeMessage(props.id)}><i className="fa fa-trash"></i></button>
+      {
+        props.from == props.name ?
+          <button className={styles.button} onClick={() => props.removeMessage(props.id)}><i className="fa fa-trash"></i></button> : null
+      }
     </div>
 );
 
@@ -17,6 +20,7 @@ const MessageList = props => (
           return (
             <Message
               key={i}
+              name={props.name}
               from={message.from}
               text={message.text}
               id={message.id}

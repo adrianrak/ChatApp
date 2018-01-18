@@ -46,6 +46,7 @@ class App extends Component {
     }
 
     render() {
+        console.log('this.state', this.state);
         return this.state.name !== '' ? this.renderLayout() : this.renderUserForm();
     }
 
@@ -67,6 +68,7 @@ class App extends Component {
                     <div className={styles.MessageWrapper}>
                         <MessageList
                         messages={this.state.messages}
+                        name={this.state.name}
                         removeMessage={id => this.removeMessageHandler(id)}
                         />
                         <MessageForm
